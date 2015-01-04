@@ -5,6 +5,22 @@ class window.Hand extends Backbone.Collection
 
   hit: ->
     @add(@deck.pop())
+    if @busted()
+      @trigger 'bust', @
+
+  busted: ->
+    @scores()[0] > 21
+
+  playToWin: ->
+    @first().flip()
+    while @scores()[0] < 17
+      @hit()
+    if !@busted()
+      @stand()
+
+  maxScore: ->
+    scores  = @scores()
+    if scores[1] <= 21 then scores[1] else scores[0]
 
   stand: ->
     @trigger 'stand', @
